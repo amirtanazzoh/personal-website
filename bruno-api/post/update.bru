@@ -1,0 +1,21 @@
+meta {
+  name: update
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{base_url}}/posts/:id
+  body: json
+  auth: inherit
+}
+
+params:path {
+  id: 6
+}
+
+body:json {
+  {
+    "title": "salam updated"
+  }
+}

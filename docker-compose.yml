@@ -1,0 +1,25 @@
+services:
+  db:
+    image: postgres:latest
+    container_name: postgres_db
+    env_file:
+      - .env
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./database:/var/lib/postgresql/data
+    networks:
+      - website-network
+
+  adminer:
+    image: adminer
+    container_name: adminer
+    env_file:
+      - ./.env
+    ports:
+      - '2121:8080'
+    networks:
+      - website-network
+
+networks:
+  website-network:

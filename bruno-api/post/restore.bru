@@ -1,0 +1,15 @@
+meta {
+  name: restore
+  type: http
+  seq: 6
+}
+
+patch {
+  url: {{base_url}}/posts/:id/restore
+  body: json
+  auth: inherit
+}
+
+params:path {
+  id: 6
+}
