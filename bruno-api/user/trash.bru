@@ -1,0 +1,15 @@
+meta {
+  name: trash
+  type: http
+  seq: 7
+}
+
+delete {
+  url: {{base_url}}/users/:id
+  body: json
+  auth: inherit
+}
+
+params:path {
+  id: 6
+}

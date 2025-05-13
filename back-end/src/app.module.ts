@@ -3,9 +3,11 @@ import { DatabaseModule } from './modules/database/database.module';
 import { ConfigModule } from '@nestjs/config';
 import { PostModule } from './modules/post/post.module';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
-import { ResponseInterceptor } from './interceptors/response.interceptor';
-import { GlobalExceptionFilter } from './filters/error.filter';
-import { ErrorLoggerInterceptor } from './interceptors/error.interceptor';
+import { ResponseInterceptor } from './common/interceptors/response.interceptor';
+import { GlobalExceptionFilter } from './common/filters/error.filter';
+import { ErrorLoggerInterceptor } from './common/interceptors/error.interceptor';
+import { UserModule } from './modules/user/user.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module( {
   imports: [
@@ -14,6 +16,8 @@ import { ErrorLoggerInterceptor } from './interceptors/error.interceptor';
     } ),
     DatabaseModule,
     PostModule,
+    UserModule,
+    AuthModule,
   ],
   providers: [
     {

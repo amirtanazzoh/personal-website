@@ -1,6 +1,7 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Put } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Put, Query } from "@nestjs/common";
 import { PostService } from "./post.service";
-import { CreatePostDto, UpdatePostDto } from "./post.dto";
+import { CreatePostDto, UpdatePostDto } from "../../common/dto/post.dto";
+import { QueryParamsDto } from "src/common/dto/query-params.dto";
 
 @Controller( '/posts' )
 export class PostController
@@ -9,7 +10,7 @@ export class PostController
     constructor ( private readonly service: PostService ) { }
 
     @Get()
-    async getAll () { return this.service.getAll(); }
+    async getAll ( @Query() query: QueryParamsDto ) { return this.service.getAll( query ); }
 
     @Get( '/trash' )
     async getTrash () { return this.service.getTrash(); }
