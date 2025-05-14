@@ -15,7 +15,6 @@ export class ParseRequired implements PipeTransform
     {
         const paramName = metadata.data || 'input';
 
-        console.log( value );
 
         if ( typeof value !== 'string' || !value.trim() )
         {

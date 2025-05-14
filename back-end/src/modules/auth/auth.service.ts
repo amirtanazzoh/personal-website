@@ -20,7 +20,6 @@ export class AuthService
             ],
         } );
 
-
         return ( {
             user_exists: !!user
         } );
@@ -32,14 +31,9 @@ export class AuthService
         user.password = await hashPassword( body.password );
 
         return this.userRepo.save( user )
-            .catch( ( err ) =>
-            {
-                throw new BadRequestException( err.detail );
-            } ).then( ( res ) =>
-            {
-                return { success: !!res };
-            } );
-
-
+            .catch( ( err ) => { throw new BadRequestException( err.detail ); } )
+            .then( ( res ) => { return { success: !!res }; } );
     }
+
+
 }

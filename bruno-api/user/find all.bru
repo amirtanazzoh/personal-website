@@ -5,15 +5,15 @@ meta {
 }
 
 get {
-  url: {{base_url}}/users?sortBy=created_at&order=asc&limit=2&page=1&search=4
+  url: {{base_url}}/users
   body: none
   auth: inherit
 }
 
 params:query {
-  sortBy: created_at
-  order: asc
-  limit: 2
-  page: 1
-  search: 4
+  ~sortBy: created_at
+  ~order: asc
+  ~limit: 2
+  ~page: 1
+  ~search: 4
 }

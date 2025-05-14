@@ -8,12 +8,13 @@ import { GlobalExceptionFilter } from './common/filters/error.filter';
 import { ErrorLoggerInterceptor } from './common/interceptors/error.interceptor';
 import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { ThrottlerModule } from '@nestjs/throttler';
+import { APP_THROTTLER } from './utils/constants.util';
 
 @Module( {
   imports: [
-    ConfigModule.forRoot( {
-      isGlobal: true,
-    } ),
+    ConfigModule.forRoot( { isGlobal: true, } ),
+    ThrottlerModule.forRoot( [ APP_THROTTLER ] ),
     DatabaseModule,
     PostModule,
     UserModule,
