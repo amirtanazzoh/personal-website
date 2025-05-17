@@ -30,10 +30,10 @@ async function main ()
     await AppDataSource.initialize();
     const apiKeyRepo = AppDataSource.getRepository( ApiKey );
 
-    const apiKey = apiKeyRepo.create( {
-        keyHash,
-        owner: 'frontend',
-    } );
+    const ownerArg = process.argv[ 2 ];
+    const owner = ownerArg || 'frontend';
+
+    const apiKey = apiKeyRepo.create( { keyHash, owner } );
 
     await apiKeyRepo.save( apiKey );
 

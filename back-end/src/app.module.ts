@@ -13,10 +13,10 @@ import { APP_THROTTLER } from './utils/constants.util';
 import { JwtStrategy } from './common/strategies/auth.strategy';
 import { JWTConfigModule } from './modules/jwt.module';
 
-@Module( {
+@Module({
   imports: [
-    ConfigModule.forRoot( { isGlobal: true, } ),
-    ThrottlerModule.forRoot( [ APP_THROTTLER ] ),
+    ConfigModule.forRoot({ isGlobal: true }),
+    ThrottlerModule.forRoot([APP_THROTTLER]),
     JWTConfigModule,
     DatabaseModule,
     PostModule,
@@ -27,16 +27,16 @@ import { JWTConfigModule } from './modules/jwt.module';
     JwtStrategy,
     {
       provide: APP_INTERCEPTOR,
-      useClass: ResponseInterceptor
+      useClass: ResponseInterceptor,
     },
     {
       provide: APP_INTERCEPTOR,
-      useClass: ErrorLoggerInterceptor
+      useClass: ErrorLoggerInterceptor,
     },
     {
       provide: APP_FILTER,
-      useClass: GlobalExceptionFilter
-    }
-  ]
-} )
-export class AppModule { }
+      useClass: GlobalExceptionFilter,
+    },
+  ],
+})
+export class AppModule {}
