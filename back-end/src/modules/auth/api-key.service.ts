@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
-import { hashApiKey } from 'src/utils/api-key.util';
+import { hashCrypto } from 'src/utils/api-key.util';
 import { ApiKey } from '../database/api-keys.entity';
 import { Repository } from 'typeorm';
 
@@ -19,7 +19,7 @@ export class ApiKeyService
     async validateApiKey ( rawKey: string )
     {
         const secret = this.config.get<string>( 'API_KEY_SECRET' ) ?? '';
-        const hashedKey = hashApiKey( rawKey, secret );
+        const hashedKey = hashCrypto( rawKey, secret );
 
         return this.apiKeyRepo.findOne( { where: { keyHash: hashedKey } } );
     }

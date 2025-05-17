@@ -10,17 +10,21 @@ import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { APP_THROTTLER } from './utils/constants.util';
+import { JwtStrategy } from './common/strategies/auth.strategy';
+import { JWTConfigModule } from './modules/jwt.module';
 
 @Module( {
   imports: [
     ConfigModule.forRoot( { isGlobal: true, } ),
     ThrottlerModule.forRoot( [ APP_THROTTLER ] ),
+    JWTConfigModule,
     DatabaseModule,
     PostModule,
     UserModule,
     AuthModule,
   ],
   providers: [
+    JwtStrategy,
     {
       provide: APP_INTERCEPTOR,
       useClass: ResponseInterceptor

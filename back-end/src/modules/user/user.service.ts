@@ -4,7 +4,7 @@ import { User } from "../database/user.entity";
 import { IsNull, Like, Not, Repository } from "typeorm";
 import { QueryParamsDto } from "src/common/dto/query-params.dto";
 import { CreateUserDto, UpdateUserDto } from "src/common/dto/user.dto";
-import { hashPassword } from "src/utils/password.util";
+import { hashBcrypt, } from "src/utils/bcrypt.util";
 
 @Injectable()
 export class UserService
@@ -72,7 +72,7 @@ export class UserService
     {
 
         const newUser = this.repo.create( user );
-        newUser.password = await hashPassword( user.password );
+        newUser.password = await hashBcrypt( user.password );
 
         return this.repo.save( newUser );
     }
@@ -81,6 +81,8 @@ export class UserService
     {
 
         await this.existsById( id );
+
+        if ( updatedUser.password ) { updatedUser.password = await hashBcrypt( updatedUser.password ); }
 
         await this.repo.update( id, updatedUser );
 

@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import { generateApiKey, hashApiKey } from '../src/utils/api-key.util';
+import { generateApiKey, hashCrypto } from '../src/utils/api-key.util';
 import { ApiKey } from '../src/modules/database/api-keys.entity';
 import { DataSource } from 'typeorm';
 
@@ -25,14 +25,14 @@ async function main ()
         process.exit( 1 );
     }
 
-    const keyHash = hashApiKey( rawKey, secret );
+    const keyHash = hashCrypto( rawKey, secret );
 
     await AppDataSource.initialize();
     const apiKeyRepo = AppDataSource.getRepository( ApiKey );
 
     const apiKey = apiKeyRepo.create( {
         keyHash,
-        owner: '::1',
+        owner: 'frontend',
     } );
 
     await apiKeyRepo.save( apiKey );

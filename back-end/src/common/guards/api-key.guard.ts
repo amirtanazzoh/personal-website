@@ -14,8 +14,14 @@ export class ApiKeyGuard implements CanActivate
         const apiKey = request.headers[ 'x-sec-app' ];
         if ( !apiKey ) throw new UnauthorizedException( 'Missing API key' );
 
+        const apiOwner = request.headers[ 'x-owner' ];
         const apiClient = await this.apiKeyService.validateApiKey( apiKey );
-        if ( !apiClient || !apiClient.isActive || apiClient.owner !== ip )
+        if (
+            !apiClient ||
+            !apiClient.isActive ||
+            !apiOwner ||
+            apiClient.owner !== apiOwner
+        )
         {
             throw new UnauthorizedException( 'Invalid API key' );
         }

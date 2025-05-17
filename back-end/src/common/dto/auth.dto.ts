@@ -24,3 +24,12 @@ export class SignInDto
     @IsString()
     last_name: string;
 }
+
+export class LoginDto
+{
+    @IsString()
+    input: string;
+
+    @IsValidPassword()
+    password: string;
+}

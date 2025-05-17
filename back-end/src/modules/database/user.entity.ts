@@ -1,5 +1,6 @@
 import { EUserRole } from "src/types/enums";
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { RefreshToken } from "./refresh-token.entity";
 
 @Entity()
 export class User
@@ -27,6 +28,9 @@ export class User
 
     @Column( { enum: EUserRole, default: EUserRole.User } )
     role: EUserRole;
+
+    @OneToMany( () => RefreshToken, ( token ) => token.user )
+    refreshTokens: RefreshToken[];
 
     @CreateDateColumn()
     created_at: Date;

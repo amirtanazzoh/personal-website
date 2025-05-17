@@ -1,7 +1,9 @@
 import * as crypto from 'crypto';
 
-export function hashApiKey ( apiKey: string, secret: string ): string
+export function hashCrypto ( apiKey: string, secret: string = '' ): string
 {
+    if ( secret == '' ) secret = process.env.API_KEY_SECRET ?? '';
+
     return crypto.createHmac( 'sha256', secret ).update( apiKey ).digest( 'hex' );
 }
 

@@ -1,13 +1,15 @@
-import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Patch, Post, Put, Query } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Patch, Post, Put, Query, UseGuards } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { QueryParamsDto } from "src/common/dto/query-params.dto";
 import { CreateUserDto, UpdateUserDto } from "src/common/dto/user.dto";
+import { JwtAuthGuard } from "src/common/guards/jwt.guard";
 
+
+@UseGuards( JwtAuthGuard )
 @Controller( '/users' )
 export class UserController
 {
     constructor ( private readonly service: UserService ) { }
-
 
     @Get()
     async getAll ( @Query() query: QueryParamsDto ) { return this.service.getAll( query ); }
