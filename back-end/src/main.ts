@@ -3,6 +3,8 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { winstonLogger } from './common/logger/winston.logger';
 import { WinstonModule } from 'nest-winston';
+import { ApiKeyService } from './modules/auth/api-key.service';
+import { ApiKeyGuard } from './common/guards/api-key.guard';
 
 async function bootstrap ()
 {
@@ -20,8 +22,8 @@ async function bootstrap ()
     } ),
   );
 
-  // const apiKeyService = app.get(ApiKeyService);
-  // app.useGlobalGuards(new ApiKeyGuard(apiKeyService));
+  const apiKeyService = app.get( ApiKeyService );
+  app.useGlobalGuards( new ApiKeyGuard( apiKeyService ) );
 
   await app.listen( process.env.PORT ?? 3000 );
 }
