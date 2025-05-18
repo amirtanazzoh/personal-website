@@ -1,0 +1,11 @@
+meta {
+  name: download
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{base_url}}/files/download
+  body: json
+  auth: inherit
+}

@@ -1,4 +1,5 @@
-import {
+import
+{
   CallHandler,
   ExecutionContext,
   Injectable,
@@ -7,13 +8,15 @@ import {
 import { Observable, map } from 'rxjs';
 
 @Injectable()
-export class ResponseInterceptor implements NestInterceptor {
-  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+export class ResponseInterceptor implements NestInterceptor
+{
+  intercept ( context: ExecutionContext, next: CallHandler ): Observable<any>
+  {
     return next.handle().pipe(
-      map((data) => ({
+      map( ( data ) => ( {
         success: true,
-        data,
-      })),
+        data
+      } ) ),
     );
   }
 }

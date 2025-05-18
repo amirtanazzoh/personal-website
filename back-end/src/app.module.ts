@@ -12,16 +12,18 @@ import { ThrottlerModule } from '@nestjs/throttler';
 import { APP_THROTTLER } from './utils/constants.util';
 import { JwtStrategy } from './common/strategies/auth.strategy';
 import { JWTConfigModule } from './modules/jwt.module';
+import { FileModule } from './modules/file/file.module';
 
-@Module({
+@Module( {
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
-    ThrottlerModule.forRoot([APP_THROTTLER]),
+    ConfigModule.forRoot( { isGlobal: true } ),
+    ThrottlerModule.forRoot( [ APP_THROTTLER ] ),
     JWTConfigModule,
     DatabaseModule,
     PostModule,
     UserModule,
     AuthModule,
+    FileModule,
   ],
   providers: [
     JwtStrategy,
@@ -38,5 +40,5 @@ import { JWTConfigModule } from './modules/jwt.module';
       useClass: GlobalExceptionFilter,
     },
   ],
-})
-export class AppModule {}
+} )
+export class AppModule { }

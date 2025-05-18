@@ -1,0 +1,19 @@
+meta {
+  name: upload
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{base_url}}/files/upload
+  body: multipartForm
+  auth: inherit
+}
+
+body:multipart-form {
+  file: @file(/home/tanazzoh/Desktop/Group 2.png)
+}
+
+body:file {
+  file: @file(/home/tanazzoh/Desktop/Group 2.png) @contentType(image/png)
+}

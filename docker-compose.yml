@@ -21,5 +21,19 @@ services:
     networks:
       - website-network
 
+  minio:
+    image: minio/minio
+    container_name: minio
+    env_file:
+      - .env
+    ports:
+      - '9000:9000'
+      - '9001:9001'
+    volumes:
+      - ./minio-data:/data
+    command: server /data --console-address ":9001"
+    networks:
+      - website-network
+
 networks:
   website-network:

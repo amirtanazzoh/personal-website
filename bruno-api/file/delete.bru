@@ -1,0 +1,17 @@
+meta {
+  name: delete
+  type: http
+  seq: 2
+}
+
+delete {
+  url: {{base_url}}/files/delete
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    file_name: 'group 2',
+  }
+}
