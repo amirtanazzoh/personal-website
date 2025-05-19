@@ -5,13 +5,13 @@ meta {
 }
 
 delete {
-  url: {{base_url}}/files/delete
+  url: {{base_url}}/{{prefix}}/files/delete
   body: json
   auth: inherit
 }
 
 body:json {
   {
-    file_name: 'group 2',
+    "file_id": 13
   }
 }

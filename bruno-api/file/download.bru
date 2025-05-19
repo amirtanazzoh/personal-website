@@ -5,7 +5,11 @@ meta {
 }
 
 get {
-  url: {{base_url}}/files/download
+  url: {{base_url}}/{{prefix}}/files/download?file_id=15
   body: json
   auth: inherit
+}
+
+params:query {
+  file_id: 15
 }

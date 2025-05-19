@@ -1,14 +1,19 @@
-import {
+import
+{
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Files } from './file.entity';
 
 @Entity()
-export class Post {
+export class Post
+{
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -18,11 +23,12 @@ export class Post {
   @Column()
   content: string;
 
-  @Column({ nullable: true })
+  @Column( { nullable: true } )
   digest?: string;
 
-  @Column({ nullable: true })
-  feature_image?: number;
+  @OneToOne( () => Files )
+  @JoinColumn()
+  feature_image: Files | null;
 
   @CreateDateColumn()
   created_at: Date;

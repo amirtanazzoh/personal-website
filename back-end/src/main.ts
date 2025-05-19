@@ -5,25 +5,21 @@ import { winstonLogger } from './common/logger/winston.logger';
 import { WinstonModule } from 'nest-winston';
 import { ApiKeyService } from './modules/auth/api-key.service';
 import { ApiKeyGuard } from './common/guards/api-key.guard';
+import { UserLoggerService } from './common/logger/user.logger';
+import { LogInterceptor } from './common/interceptors/log.interceptor';
 
 async function bootstrap ()
 {
-  const app = await NestFactory.create( AppModule, {
-    logger: WinstonModule.createLogger( {
-      instance: winstonLogger,
-    } ),
-  } );
+  const app = await NestFactory.create( AppModule,
+    { logger: WinstonModule.createLogger( { instance: winstonLogger } ) } );
 
-  app.useGlobalPipes(
-    new ValidationPipe( {
-      whitelist: true,
-      forbidNonWhitelisted: true,
-      transform: true,
-    } ),
-  );
+  app.useGlobalPipes( new ValidationPipe( { whitelist: true, forbidNonWhitelisted: true, transform: true, } ) );
 
-  const apiKeyService = app.get( ApiKeyService );
-  app.useGlobalGuards( new ApiKeyGuard( apiKeyService ) );
+  app.useGlobalGuards( new ApiKeyGuard( app.get( ApiKeyService ) ) );
+
+  app.useGlobalInterceptors( new LogInterceptor( app.get( UserLoggerService ) ) );
+
+  app.setGlobalPrefix( 'api/v1' );
 
   await app.listen( process.env.PORT ?? 3000 );
 }

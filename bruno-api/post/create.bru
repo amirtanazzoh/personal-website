@@ -5,7 +5,7 @@ meta {
 }
 
 post {
-  url: {{base_url}}/posts
+  url: {{base_url}}/{{prefix}}/posts
   body: json
   auth: inherit
 }
@@ -13,6 +13,7 @@ post {
 body:json {
   {
     "title": "salam 4",
-    "content": "salam 4"
+    "content": "content",
+    "feature_image_id": 14
   }
 }

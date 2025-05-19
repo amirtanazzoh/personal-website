@@ -19,11 +19,7 @@ async function main ()
     const rawKey = generateApiKey();
     const secret = process.env.API_KEY_SECRET;
 
-    if ( !secret )
-    {
-        console.error( '❌ Missing API_KEY_SECRET in .env' );
-        process.exit( 1 );
-    }
+    if ( !secret ) { console.error( '❌ Missing API_KEY_SECRET in .env' ); process.exit( 1 ); }
 
     const keyHash = hashCrypto( rawKey, secret );
 
@@ -44,8 +40,4 @@ async function main ()
     await AppDataSource.destroy();
 }
 
-main().catch( ( err ) =>
-{
-    console.error( err );
-    AppDataSource.destroy();
-} );
+main().catch( ( err ) => { console.error( err ); AppDataSource.destroy(); } );

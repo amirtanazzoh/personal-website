@@ -5,13 +5,13 @@ meta {
 }
 
 post {
-  url: {{base_url}}/files/upload
+  url: {{base_url}}/{{prefix}}/files/upload
   body: multipartForm
   auth: inherit
 }
 
 body:multipart-form {
-  file: @file(/home/tanazzoh/Desktop/Group 2.png)
+  file: @file(/home/tanazzoh/Downloads/resume_amir_tanazzoh.docx)
 }
 
 body:file {

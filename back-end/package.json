@@ -18,9 +18,11 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "create-api-key": "npx ts-node ./scripts/create-api-key.ts"
+    "create-api-key": "npx ts-node  -r tsconfig-paths/register ./scripts/create-api-key.ts",
+    "create-admin": "npx ts-node -r tsconfig-paths/register ./scripts/create-admin.ts"
   },
   "dependencies": {
+    "@faker-js/faker": "^9.8.0",
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.0.1",

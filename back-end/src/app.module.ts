@@ -13,6 +13,7 @@ import { APP_THROTTLER } from './utils/constants.util';
 import { JwtStrategy } from './common/strategies/auth.strategy';
 import { JWTConfigModule } from './modules/jwt.module';
 import { FileModule } from './modules/file/file.module';
+import { UserLoggerService } from './common/logger/user.logger';
 
 @Module( {
   imports: [
@@ -27,6 +28,7 @@ import { FileModule } from './modules/file/file.module';
   ],
   providers: [
     JwtStrategy,
+    UserLoggerService,
     {
       provide: APP_INTERCEPTOR,
       useClass: ResponseInterceptor,

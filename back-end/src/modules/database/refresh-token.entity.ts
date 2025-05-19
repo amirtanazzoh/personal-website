@@ -1,4 +1,5 @@
-import {
+import
+{
   Entity,
   Column,
   PrimaryGeneratedColumn,
@@ -9,27 +10,28 @@ import {
 } from 'typeorm';
 import { User } from './user.entity';
 
-@Entity('refresh_tokens')
-export class RefreshToken {
+@Entity( 'refresh_tokens' )
+export class RefreshToken
+{
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
   @Index()
-  token: string; // You may store hashed version
+  token: string;
 
-  @Column({ type: 'timestamp' })
-  expiresAt: Date;
+  @Column( { type: 'timestamp' } )
+  expires_at: Date;
 
-  @ManyToOne(() => User, (user) => user.refreshTokens, { onDelete: 'CASCADE' })
+  @ManyToOne( () => User, ( user ) => user.refreshTokens, { onDelete: 'CASCADE' } )
   user: User;
 
+  @Column( { default: false } )
+  revoked: boolean;
+
   @CreateDateColumn()
-  createdAt: Date;
+  created_at: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date;
-
-  @Column({ default: false })
-  revoked: boolean;
+  updated_at: Date;
 }
