@@ -10,13 +10,18 @@ import
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { QueryParamsDto } from 'src/common/dto/query-params.dto';
 import { CreateUserDto, UpdateUserDto } from 'src/common/dto/user.dto';
+import { Roles } from 'src/common/decorators/roles.decorator';
+import { EUserRole } from 'src/types/enums';
+import { JwtAuthGuard } from 'src/common/guards/jwt.guard';
+import { RolesGuard } from 'src/common/guards/roles.guard';
 
-// @UseGuards( JwtAuthGuard, RolesGuard )
-// @Roles( EUserRole.Admin )
+@UseGuards( JwtAuthGuard, RolesGuard )
+@Roles( EUserRole.Admin )
 @Controller( '/users' )
 export class UserController
 {

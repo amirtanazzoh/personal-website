@@ -19,6 +19,8 @@ import { FileService } from "./file.service";
 import { QueryParamsDto } from "src/common/dto/query-params.dto";
 import { ParseRequired } from "src/common/pipes/requierd.pipe";
 import { Response } from "express";
+import { EUserRole } from "src/types/enums";
+import { Roles } from "src/common/decorators/roles.decorator";
 
 @Controller( 'files' )
 export class FileController
@@ -32,6 +34,7 @@ export class FileController
 
     @Post( 'upload' )
     @UseInterceptors( FileInterceptor( 'file' ) )
+    @Roles( EUserRole.Admin )
     async fileUpload ( @UploadedFile() file: Express.Multer.File )
     {
 
@@ -49,6 +52,7 @@ export class FileController
     }
 
     @Delete( 'delete' )
+    @Roles( EUserRole.Admin )
     async deleteFile ( @Body( 'file_id', ParseRequired, ParseIntPipe ) file_id: number )
     {
 
