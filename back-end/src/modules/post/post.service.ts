@@ -1,37 +1,23 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IsNull, Like, Not, Repository } from 'typeorm';
 import { Post } from '../database/post.entity';
 import { CreatePostDto, UpdatePostDto } from '../../common/dto/post.dto';
 import { QueryParamsDto } from 'src/common/dto/query-params.dto';
-import { Files } from '../database/file.entity';
+import { FileService } from '../file/file.service';
 
 @Injectable()
 export class PostService
 {
   constructor (
     @InjectRepository( Post ) private readonly repo: Repository<Post>,
-    @InjectRepository( Files ) private readonly fileRepo: Repository<Files>
+    @Inject( FileService ) private readonly fileService: FileService,
   ) { }
 
-  private async existsById ( id: number )
+  private async checkExists ( id: number )
   {
-    const exists = await this.repo.existsBy( { id } );
-
-    if ( !exists )
-      throw new NotFoundException( `post with id: ${ id } is not found` );
-
-    return exists;
-  }
-
-  private async getFileById ( id: number | undefined )
-  {
-    if ( !id ) return null;
-
-    const file = await this.fileRepo.findOneBy( { id } );
-    if ( !file ) throw new NotFoundException( 'file not found' );
-
-    return file;
+    if ( !( await this.repo.existsBy( { id } ) ) )
+      throw new NotFoundException( `project with id: ${ id } is not found` );
   }
 
   async getAll ( query: QueryParamsDto )
@@ -83,34 +69,28 @@ export class PostService
 
   async create ( post: CreatePostDto )
   {
-    const newPost = this.repo.create( { ...post, feature_image: await this.getFileById( post.feature_image_id ) } );
+
+    const feature_image = post.feature_image_id ?
+      await this.fileService.getById( post.feature_image_id ) : undefined;
+
+    const newPost = this.repo.create( { ...post, feature_image } );
 
     return this.repo.save( newPost );
   }
 
   async update ( id: number, updatedPost: UpdatePostDto )
   {
-    await this.existsById( id );
+    await this.checkExists( id );
 
-    await this.repo.update( id, { ...updatedPost, feature_image: await this.getFileById( updatedPost.feature_image_id ) } );
+    const feature_image = updatedPost.feature_image_id ?
+      await this.fileService.getById( updatedPost.feature_image_id ) : undefined;
+
+    await this.repo.update( id, { ...updatedPost, feature_image } );
   }
 
-  async getTrash ()
-  {
-    return this.repo.find( {
-      where: {
-        deleted_at: Not( IsNull() ),
-      },
-      withDeleted: true,
-    } );
-  }
+  async getTrash () { return this.repo.find( { where: { deleted_at: Not( IsNull() ) }, withDeleted: true } ); }
 
-  async trash ( id: number )
-  {
-    await this.existsById( id );
-
-    await this.repo.softDelete( id );
-  }
+  async trash ( id: number ) { await this.checkExists( id ); await this.repo.softDelete( id ); }
 
   async restore ( id: number )
   {

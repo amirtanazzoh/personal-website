@@ -10,6 +10,7 @@ import { Files } from "../database/file.entity";
 @Module( {
     imports: [ CompressModule, MinioModule, TypeOrmModule.forFeature( [ Files ] ) ],
     controllers: [ FileController ],
-    providers: [ MinioService, FileService ]
+    providers: [ MinioService, FileService ],
+    exports: [ FileService ]
 } )
 export class FileModule { }

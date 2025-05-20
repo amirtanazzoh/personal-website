@@ -14,6 +14,7 @@ import { JwtStrategy } from './common/strategies/auth.strategy';
 import { JWTConfigModule } from './modules/jwt.module';
 import { FileModule } from './modules/file/file.module';
 import { UserLoggerService } from './common/logger/user.logger';
+import { ProjectModule } from './modules/project/project.module';
 
 @Module( {
   imports: [
@@ -25,6 +26,7 @@ import { UserLoggerService } from './common/logger/user.logger';
     UserModule,
     AuthModule,
     FileModule,
+    ProjectModule
   ],
   providers: [
     JwtStrategy,

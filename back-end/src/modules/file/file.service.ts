@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Files } from "../database/file.entity";
-import { Like, Repository } from "typeorm";
+import { In, Like, Repository } from "typeorm";
 import { MinioUploaded } from "src/types/files";
 import { QueryParamsDto } from "src/common/dto/query-params.dto";
 
@@ -35,10 +35,7 @@ export class FileService
         } );
     }
 
-    async delete ( id: number )
-    {
-        return this.fileRepo.softDelete( id );
-    }
+    async delete ( id: number ) { return this.fileRepo.softDelete( id ); }
 
     async getAll ( query: QueryParamsDto )
     {
@@ -75,4 +72,6 @@ export class FileService
             lastPage: Math.ceil( total / limit ),
         };
     }
+
+    async getGroupById ( ids: number[] ) { return this.fileRepo.find( { where: { id: In( ids ) } } ); }
 }
