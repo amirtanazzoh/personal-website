@@ -1,0 +1,19 @@
+meta {
+  name: find all
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{base_url}}/{{prefix}}/projects
+  body: none
+  auth: inherit
+}
+
+params:query {
+  ~sortBy: created_at
+  ~order: asc
+  ~limit: 2
+  ~page: 1
+  ~search: 4
+}

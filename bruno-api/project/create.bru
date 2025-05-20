@@ -1,0 +1,19 @@
+meta {
+  name: create
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{base_url}}/{{prefix}}/projects
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "title": "salam 4",
+    "content": "content",
+    "feature_image_id": 14
+  }
+}

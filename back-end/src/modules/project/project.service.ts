@@ -45,11 +45,11 @@ export class ProjectService
             order: sortBy ? { [ sortBy ]: order.toUpperCase() as 'ASC' | 'DESC' } : undefined,
             skip,
             take: limit,
-            relations: [ 'feature_image' ]
+            relations: [ 'attachments' ]
         } );
 
         return {
-            posts: data,
+            projects: data,
             total,
             page,
             lastPage: Math.ceil( total / limit ),

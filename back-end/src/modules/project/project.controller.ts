@@ -5,7 +5,7 @@ import { CreateProjectDto, UpdateProjectDto } from 'src/common/dto/project.dto';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { EUserRole } from 'src/types/enums';
 
-@Controller()
+@Controller( 'projects' )
 export class ProjectController
 {
     constructor ( private readonly service: ProjectService ) { }

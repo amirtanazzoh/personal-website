@@ -1,4 +1,5 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Project } from "./project.entity";
 
 @Entity( 'files' )
 export class Files
@@ -17,6 +18,9 @@ export class Files
 
     @Column()
     size: number;
+
+    @ManyToMany( () => Project, ( project ) => project.attachments )
+    projects: Project[];
 
     @CreateDateColumn()
     created_at: Date;
