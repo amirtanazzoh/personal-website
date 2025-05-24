@@ -7,11 +7,16 @@ import { ApiKeyService } from './modules/auth/api-key.service';
 import { ApiKeyGuard } from './common/guards/api-key.guard';
 import { UserLoggerService } from './common/logger/user.logger';
 import { LogInterceptor } from './common/interceptors/log.interceptor';
+import * as cookieParser from 'cookie-parser';
 
 async function bootstrap ()
 {
   const app = await NestFactory.create( AppModule,
     { logger: WinstonModule.createLogger( { instance: winstonLogger } ) } );
+
+  app.use( cookieParser() );
+
+  app.enableCors( { origin: process.env.FRONTEND_URL, credentials: true } );
 
   app.useGlobalPipes( new ValidationPipe( { whitelist: true, forbidNonWhitelisted: true, transform: true, } ) );
 
