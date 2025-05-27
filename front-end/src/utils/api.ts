@@ -10,16 +10,32 @@ const logToServer = async ( msg: string ) =>
     catch ( e ) { console.warn( 'Failed to send log to server:', e ); }
 };
 
-export const requestWrapper = async <T = any> ( request: Promise<any> ): Promise<T | null | undefined> =>
+export const requestWrapper = async <T = any> ( request: Promise<any> ): Promise<T | {
+    success: false;
+    statusCode: number;
+    message: string;
+}> =>
 {
     try { const response = await request; return response.data; }
     catch ( error: any )
     {
         const method = error?.config?.method?.toUpperCase() || 'UNKNOWN';
+
         const url = error?.config?.baseURL + '/' + error?.config?.url || 'UNKNOWN';
-        const msg = error.response?.data.message;
-        const message = `Request failed: ${ method } ${ url } - ${ msg }`;
+
+        let msg = error.response?.data.message;
+        if ( Array.isArray( msg ) ) { msg = msg.join( ', \n' ); }
+
+        const status = error.response?.data.statusCode;
+
+        const message = `Request failed: ${ method } ${ url }:${ status } - ${ msg }`;
+
         await logToServer( message );
-        return null;
+
+        return {
+            success: false,
+            statusCode: status,
+            message: msg,
+        };
     }
 };

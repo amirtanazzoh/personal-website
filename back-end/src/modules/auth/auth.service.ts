@@ -1,4 +1,4 @@
-import { BadRequestException, Inject, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../database/user.entity';
 import { Repository } from 'typeorm';
@@ -8,8 +8,6 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { RefreshToken } from '../database/refresh-token.entity';
 import { Tokens } from 'src/types/login';
-import { TIME_BASE_MIL, TIME_BASE_SEC } from 'src/utils/constants.util';
-import { hashCrypto } from 'src/utils/api-key.util';
 
 @Injectable()
 export class AuthService
@@ -26,33 +24,11 @@ export class AuthService
   {
     return {
       access_token: this.generateAccessToken( user.id ),
-      refresh_token: await this.generateRefreshToken( user ),
     };
   }
 
   private generateAccessToken ( id: string ) { return this.jwtService.sign( { sub: id } ); }
 
-  private async generateRefreshToken ( user: User ): Promise<string>
-  {
-    const payload = {};
-
-    const refreshTokenValue = this.jwtService.sign( payload, {
-      secret: this.configService.get( 'JWT_REFRESH_SECRET' ),
-      expiresIn: TIME_BASE_SEC.WEEK,
-    } );
-
-    const hashedToken = hashCrypto( refreshTokenValue );
-
-    const refreshToken = this.refreshTokenRepo.create( {
-      token: hashedToken,
-      user: user,
-      expires_at: new Date( Date.now() + TIME_BASE_MIL.WEEK ),
-    } );
-
-    await this.refreshTokenRepo.save( refreshToken );
-
-    return refreshTokenValue;
-  }
 
   async checkAvailable ( input: string ): Promise<{ user_exists: boolean; }>
   {
@@ -87,22 +63,4 @@ export class AuthService
 
   }
 
-  async refreshToken ( refreshTokenValue: string ): Promise<Tokens>
-  {
-    const hashedToken = hashCrypto( refreshTokenValue );
-
-    const existingToken = await this.refreshTokenRepo.findOne(
-      { where: { token: hashedToken, revoked: false }, relations: [ 'user' ], } );
-
-    if ( !existingToken ) { throw new UnauthorizedException( 'Invalid refresh token' ); }
-
-    if ( existingToken.expires_at < new Date() ) { throw new UnauthorizedException( 'Refresh token expired' ); }
-
-    const user = existingToken.user;
-
-    existingToken.revoked = true;
-    await this.refreshTokenRepo.save( existingToken );
-
-    return this.generateResponseTokens( user );
-  }
 }
