@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "@faker-js/faker": "^9.8.0",
+    "@nestjs-modules/mailer": "^2.0.2",
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.0.1",
@@ -41,6 +42,7 @@
     "minio": "^8.0.5",
     "moment-timezone": "^0.5.48",
     "nest-winston": "^1.10.2",
+    "nodemailer": "^7.0.3",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "pdf2image": "^1.2.3",

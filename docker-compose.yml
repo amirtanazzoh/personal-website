@@ -35,5 +35,13 @@ services:
     networks:
       - website-network
 
+  smtp:
+    image: ghcr.io/devture/exim-relay:latest
+    container_name: smtp
+    env_file:
+      - .env
+    ports:
+      - '8026:8025'
+
 networks:
   website-network:

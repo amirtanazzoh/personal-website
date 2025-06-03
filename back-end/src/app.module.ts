@@ -15,6 +15,7 @@ import { JWTConfigModule } from './modules/jwt.module';
 import { FileModule } from './modules/file/file.module';
 import { UserLoggerService } from './common/logger/user.logger';
 import { ProjectModule } from './modules/project/project.module';
+import { MailModule } from './modules/mail/mail.module';
 
 @Module( {
   imports: [
@@ -26,7 +27,8 @@ import { ProjectModule } from './modules/project/project.module';
     UserModule,
     AuthModule,
     FileModule,
-    ProjectModule
+    ProjectModule,
+    MailModule
   ],
   providers: [
     JwtStrategy,

@@ -3,7 +3,8 @@ import { IsValidPassword } from '../validators/password';
 import { IsValidUsername } from '../validators/username';
 import { IsValidIRPhone } from '../validators/iran-phone';
 
-export class SignInDto {
+export class SignInDto
+{
   @IsValidUsername()
   username: string;
 
@@ -24,10 +25,18 @@ export class SignInDto {
   last_name: string;
 }
 
-export class LoginDto {
+export class LoginDto
+{
   @IsString()
   input: string;
 
   @IsValidPassword()
   password: string;
+}
+
+
+export class ForgetPasswordDto
+{
+  @IsString()
+  input: string;
 }

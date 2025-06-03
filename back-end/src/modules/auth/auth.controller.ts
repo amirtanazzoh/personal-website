@@ -1,14 +1,18 @@
-import { Body, Controller, Get, Post, Query, Res } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Post, Query, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ParseRequired } from 'src/common/pipes/requierd.pipe';
-import { LoginDto, SignInDto } from 'src/common/dto/auth.dto';
+import { ForgetPasswordDto, LoginDto, SignInDto } from 'src/common/dto/auth.dto';
 import { Response } from 'express';
 import { TIME_BASE_MIL } from 'src/utils/constants.util';
+import { MailService } from '../mail/mail.service';
 
 @Controller( '/auth' )
 export class AuthController
 {
-  constructor ( private service: AuthService ) { }
+  constructor (
+    private service: AuthService,
+    private mailService: MailService
+  ) { }
 
 
   private setAccessToken ( res: Response, access_token: string )
@@ -56,5 +60,16 @@ export class AuthController
     } );
 
     return { message: 'Logged out' };
+  }
+
+  @Post( 'forget-password' )
+  async forgetPassword ( @Body() { input }: ForgetPasswordDto )
+  {
+    const user = await this.service.checkAvailable( input, true );
+
+    if ( 'user_exists' in user ) throw new BadRequestException( `User with input: ${ input } not found!` );
+
+    this.mailService.sendEmail( user.email, 'forget password', 'welcome', { name: user.first_name, email: user.email } );
+
   }
 }

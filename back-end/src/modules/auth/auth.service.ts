@@ -30,12 +30,18 @@ export class AuthService
   private generateAccessToken ( id: string ) { return this.jwtService.sign( { sub: id } ); }
 
 
-  async checkAvailable ( input: string ): Promise<{ user_exists: boolean; }>
+  async checkAvailable ( input: string, return_user: boolean = false ): Promise<{ user_exists: boolean; } | User>
   {
     const user = await this.userRepo.findOne(
       { where: [ { username: input }, { email: input }, { phone_number: input } ], } );
 
+
+    if ( !user ) return { user_exists: false };
+
+    if ( return_user ) return user;
+
     return { user_exists: !!user };
+
   }
 
   async signIn ( body: SignInDto ): Promise<Tokens>

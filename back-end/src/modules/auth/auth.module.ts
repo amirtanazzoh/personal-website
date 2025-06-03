@@ -7,13 +7,15 @@ import { ApiKey } from '../database/api-keys.entity';
 import { ApiKeyService } from './api-key.service';
 import { JWTConfigModule } from '../jwt.module';
 import { RefreshToken } from '../database/refresh-token.entity';
+import { MailModule } from '../mail/mail.module';
 
-@Module({
+@Module( {
   imports: [
-    TypeOrmModule.forFeature([User, ApiKey, RefreshToken]),
+    TypeOrmModule.forFeature( [ User, ApiKey, RefreshToken ] ),
     JWTConfigModule,
+    MailModule
   ],
-  controllers: [AuthController],
-  providers: [AuthService, ApiKeyService],
-})
-export class AuthModule {}
+  controllers: [ AuthController ],
+  providers: [ AuthService, ApiKeyService ],
+} )
+export class AuthModule { }
