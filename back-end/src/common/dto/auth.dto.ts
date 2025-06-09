@@ -40,3 +40,13 @@ export class ForgetPasswordDto
   @IsString()
   input: string;
 }
+
+export class ResetPasswordDto
+{
+
+  @IsString()
+  token: string;
+
+  @IsValidPassword()
+  password: string;
+}

@@ -1,6 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { MailerService } from '@nestjs-modules/mailer';
 
+export const MailTitles = {
+    Welcome: 'Welcome to my website! | AmirTanazzoh ',
+    ForgetPassword: 'Forget your password? | AmirTanazzoh'
+};
+
 @Injectable()
 export class MailService
 {

@@ -5,8 +5,6 @@ import { Repository } from 'typeorm';
 import { LoginDto, SignInDto } from 'src/common/dto/auth.dto';
 import { hashBcrypt, verifyBcrypt } from 'src/utils/bcrypt.util';
 import { JwtService } from '@nestjs/jwt';
-import { ConfigService } from '@nestjs/config';
-import { RefreshToken } from '../database/refresh-token.entity';
 import { Tokens } from 'src/types/login';
 
 @Injectable()
@@ -14,27 +12,13 @@ export class AuthService
 {
   constructor (
     @InjectRepository( User ) private userRepo: Repository<User>,
-    @InjectRepository( RefreshToken )
-    private refreshTokenRepo: Repository<RefreshToken>,
     @Inject( JwtService ) private readonly jwtService: JwtService,
-    private readonly configService: ConfigService,
   ) { }
-
-  private async generateResponseTokens ( user: User )
-  {
-    return {
-      access_token: this.generateAccessToken( user.id ),
-    };
-  }
-
-  private generateAccessToken ( id: string ) { return this.jwtService.sign( { sub: id } ); }
-
 
   async checkAvailable ( input: string, return_user: boolean = false ): Promise<{ user_exists: boolean; } | User>
   {
     const user = await this.userRepo.findOne(
       { where: [ { username: input }, { email: input }, { phone_number: input } ], } );
-
 
     if ( !user ) return { user_exists: false };
 
@@ -51,7 +35,9 @@ export class AuthService
 
     await this.userRepo.save( user ).catch( ( err ) => { throw new BadRequestException( err.detail ); } );
 
-    return this.generateResponseTokens( user );
+    return {
+      access_token: this.jwtService.sign( { sub: user.id } )
+    };
   }
 
   async login ( { input, password }: LoginDto ): Promise<Tokens>
@@ -65,8 +51,25 @@ export class AuthService
 
     if ( !isPasswordValid ) throw new BadRequestException( 'invalid credentials!' );
 
-    return this.generateResponseTokens( user );
+
+    return {
+      access_token: this.jwtService.sign( { sub: user.id } )
+    };
 
   }
 
+  async generateForgetPasswordToken ( email: string ): Promise<string>
+  {
+    return this.jwtService.sign( { email }, { expiresIn: '15m' } );
+  }
+
+  async validateForgetPasswordToken ( token: string ): Promise<{ email: string; }>
+  {
+
+    const { emailFromToken } = await this.jwtService.verify( token );
+
+    return {
+      email: emailFromToken,
+    };
+  }
 }
