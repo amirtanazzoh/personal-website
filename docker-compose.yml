@@ -4,8 +4,6 @@ services:
     container_name: postgres_db
     env_file:
       - .env
-    ports:
-      - '5432:5432'
     volumes:
       - ./database:/var/lib/postgresql/data
     restart: always
@@ -18,8 +16,6 @@ services:
     restart: unless-stopped
     env_file:
       - .env
-    ports:
-      - '2121:8080'
     networks:
       - website-network
 
@@ -82,9 +78,12 @@ services:
     image: nginx:latest
     container_name: nginx
     ports: 
-     - 8080:80
+     - 127.4.4.1:80:80
+     - 127.4.4.1:443:443
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./certs:/certs
+      - ./.htpasswd:/conf/.htpasswd
     restart: unless-stopped
     depends_on:
       - frontend

@@ -1,4 +1,5 @@
 .env
+.htpasswd
 credentials.txt
 /database
 /minio-data
