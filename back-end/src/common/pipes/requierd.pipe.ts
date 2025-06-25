@@ -1,6 +1,5 @@
-// file: pipes/input-required.pipe.ts
-
-import {
+import
+{
   PipeTransform,
   Injectable,
   BadRequestException,
@@ -8,12 +7,15 @@ import {
 } from '@nestjs/common';
 
 @Injectable()
-export class ParseRequired implements PipeTransform {
-  transform(value: any, metadata: ArgumentMetadata): string {
+export class ParseRequired implements PipeTransform
+{
+  transform ( value: any, metadata: ArgumentMetadata ): string
+  {
     const paramName = metadata.data || 'input';
 
-    if (typeof value !== 'string' || !value.trim()) {
-      throw new BadRequestException(`${paramName} parameter is required.`);
+    if ( typeof value !== 'string' || !value.trim() )
+    {
+      throw new BadRequestException( `${ paramName } parameter is required.` );
     }
 
     return value.trim();

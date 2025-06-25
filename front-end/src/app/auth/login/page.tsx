@@ -1,6 +1,5 @@
 'use client';
 
-import { LoginAction } from "@/actions/login";
 import FormAlert from "@/components/form/form-alert";
 import PasswordInput from "@/components/form/password-input";
 import TextInput from "@/components/form/text-input";
@@ -8,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormField } from "@/components/ui/form";
 import { Separator } from "@/components/ui/seprator";
+import useRefreshToken from "@/hooks/useRefreshToken";
+import { login } from "@/services/auth";
 import { LoginFormSchema, LoginFormType } from "@/types/login";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
@@ -19,13 +20,19 @@ export default function LoginPage ()
 
     const form = useForm<LoginFormType>( { resolver: zodResolver( LoginFormSchema ), defaultValues: { input: '', password: '' } } );
     const [ formStatus, setFormStatus ] = useState<{ message: string, status: undefined | Boolean; }>( { message: '', status: undefined } );
+    const { setToken } = useRefreshToken();
 
 
     async function onSubmit ( data: LoginFormType )
     {
-        const res = await LoginAction( data );
+        const res = await login( data.input, data.password );
+
         if ( !res.success ) { setFormStatus( { message: res.message, status: false } ); }
-        if ( res.success ) { setFormStatus( { message: 'login successfully!', status: true } ); }
+        if ( res.success )
+        {
+            setFormStatus( { message: 'login successfully!', status: true } );
+            setToken( res.data.refresh_token );
+        }
     };
 
 

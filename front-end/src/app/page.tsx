@@ -1,20 +1,39 @@
-import { MAP } from "@/components/utils/map";
+/* ─── app/page.tsx (or wherever) ───────────────────────────────────────────── */
+'use client';
 
-export default async function Home ()
+import { useEffect, useState } from 'react';
+import useSocket from '@/hooks/useSocket';
+
+export default function Home ()
 {
+  const socket = useSocket();
+  const [ message, setMessage ] = useState( '' );
 
-  const array = [ { something: 'asdf' }, { something: 'ass' }, { something: 'asfg' }, { something: 'dfgh' }, { something: 'xcvf' }, ];
+  useEffect( () =>
+  {
+    if ( !socket ) return;
+
+    socket.on( 'connect', () => console.log( '✅ connected' ) );
+    socket.on( 'message', ( data ) =>
+    {
+      console.log( '📨', data );
+      setMessage( typeof data === 'string' ? data : JSON.stringify( data ) );
+    } );
+
+
+
+
+    return () =>
+    {
+      socket.off( 'message' );
+      socket.off( 'connect' );
+    };
+  }, [ socket ] );
 
   return (
-    <>
-      <MAP array={ array }>
-        { ( item ) => (
-          <div>
-            { item.something }
-          </div>
-        ) }
-      </MAP>
-    </>
+    <main className="p-6">
+      <h1 className="text-xl font-semibold">Socket.IO in Next.js</h1>
+      <p>Message from server: <strong>{ message || '—' }</strong></p>
+    </main>
   );
-
 }

@@ -4,3 +4,4 @@ credentials.txt
 /database
 /minio-data
 /node_modules
+/logs

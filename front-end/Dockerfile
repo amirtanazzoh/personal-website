@@ -4,8 +4,13 @@ FROM node:20-alpine AS builder
 # Set working directory
 WORKDIR /app
 
-# Install dependencies
+# Change registry for fast installation in IRAN
+RUN npm config set registry "https://mirror-npm.runflare.com"
+
+# Copy packages
 COPY package*.json ./
+
+# Install dependencies
 RUN npm install
 
 # Copy the rest of the project

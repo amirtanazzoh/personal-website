@@ -3,22 +3,43 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../database/user.entity';
 import { Repository } from 'typeorm';
 import { LoginDto, SignInDto } from 'src/common/dto/auth.dto';
-import { hashBcrypt, verifyBcrypt } from 'src/utils/bcrypt.util';
+import { verifyBcrypt } from 'src/utils/bcrypt.util';
 import { JwtService } from '@nestjs/jwt';
 import { Tokens } from 'src/types/login';
+import { RefreshToken } from '../database/refresh-token.entity';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class AuthService
 {
   constructor (
-    @InjectRepository( User ) private userRepo: Repository<User>,
+
+    @InjectRepository( RefreshToken ) private refreshTokenRepo: Repository<RefreshToken>,
+    @Inject( UserService ) private readonly userService: UserService,
     @Inject( JwtService ) private readonly jwtService: JwtService,
   ) { }
 
+  private generateAccessToken ( user: User ): string { return this.jwtService.sign( { sub: user.id }, { expiresIn: '15m' } ); }
+
+  public generateForgetPasswordToken ( email: string ): string { return this.jwtService.sign( { email }, { expiresIn: '15m' } ); }
+
+  private async generateRefreshToken ( user: User ): Promise<string> 
+  {
+    const expiresAt = new Date();
+    expiresAt.setDate( expiresAt.getDate() + 7 ); // 7 days expiration
+
+    const refreshToken = await this.refreshTokenRepo.save( {
+      token: this.jwtService.sign( {}, { expiresIn: '7d' } ),
+      expires_at: expiresAt,
+      user,
+    } );
+
+    return refreshToken.token;
+  }
+
   async checkAvailable ( input: string, return_user: boolean = false ): Promise<{ user_exists: boolean; } | User>
   {
-    const user = await this.userRepo.findOne(
-      { where: [ { username: input }, { email: input }, { phone_number: input } ], } );
+    const user = await this.userService.getByInput( input );
 
     if ( !user ) return { user_exists: false };
 
@@ -30,20 +51,18 @@ export class AuthService
 
   async signIn ( body: SignInDto ): Promise<Tokens>
   {
-    const user = this.userRepo.create( body );
-    user.password = await hashBcrypt( body.password );
 
-    await this.userRepo.save( user ).catch( ( err ) => { throw new BadRequestException( err.detail ); } );
+    const user = await this.userService.create( body );
 
     return {
-      access_token: this.jwtService.sign( { sub: user.id } )
+      access_token: this.generateAccessToken( user ),
+      refresh_token: await this.generateRefreshToken( user ),
     };
   }
 
   async login ( { input, password }: LoginDto ): Promise<Tokens>
   {
-    const user = await this.userRepo.findOne(
-      { where: [ { username: input }, { email: input }, { phone_number: input } ], } );
+    const user = await this.userService.getByInput( input );
 
     if ( !user ) throw new NotFoundException( 'user not found!' );
 
@@ -53,14 +72,26 @@ export class AuthService
 
 
     return {
-      access_token: this.jwtService.sign( { sub: user.id } )
+      access_token: this.generateAccessToken( user ),
+      refresh_token: await this.generateRefreshToken( user ),
     };
 
   }
 
-  async generateForgetPasswordToken ( email: string ): Promise<string>
+  async refreshToken ( token: string ): Promise<Tokens>
   {
-    return this.jwtService.sign( { email }, { expiresIn: '15m' } );
+
+    const refreshToken = await this.refreshTokenRepo.findOne( { where: { token } } );
+
+    if ( !refreshToken ) throw new NotFoundException( 'refresh token not found!' );
+
+    if ( refreshToken.expires_at < new Date() ) throw new BadRequestException( 'refresh token expired!' );
+
+    return {
+      access_token: this.generateAccessToken( refreshToken.user ),
+      refresh_token: await this.generateRefreshToken( refreshToken.user ),
+    };
+
   }
 
   async validateForgetPasswordToken ( token: string ): Promise<{ email: string; }>

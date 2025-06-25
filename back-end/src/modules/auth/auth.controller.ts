@@ -6,7 +6,6 @@ import { Response } from 'express';
 import { TIME_BASE_MIL } from 'src/utils/constants.util';
 import { MailService, MailTitles } from '../mail/mail.service';
 import { UserService } from '../user/user.service';
-import { JwtService } from '@nestjs/jwt';
 
 @Controller( '/auth' )
 export class AuthController
@@ -15,7 +14,6 @@ export class AuthController
     private service: AuthService,
     private mailService: MailService,
     private userService: UserService,
-    private jwtService: JwtService,
   ) { }
 
 
@@ -31,29 +29,43 @@ export class AuthController
   }
 
   @Get( 'exist' )
-  async existUser ( @Query( 'input', ParseRequired ) input: string )
-  { return this.service.checkAvailable( input ); }
+  async existUser ( @Query( 'input', ParseRequired ) input: string ) { return this.service.checkAvailable( input ); }
+
 
   @Post( 'sign-in' )
   async signIn ( @Body() body: SignInDto, @Res( { passthrough: true } ) res: Response )
   {
-    const { access_token } = await this.service.signIn( body );
+    const { access_token, refresh_token } = await this.service.signIn( body );
 
     this.setAccessToken( res, access_token );
 
     this.mailService.sendEmail( body.email, MailTitles.Welcome, 'welcome', { name: body.first_name, email: body.email } );
+
+    return { refresh_token };
+  }
+
+  @Post( 'refresh' )
+  async refreshToken ( @Res( { passthrough: true } ) res: Response, @Body() body: { refresh_token: string; } )
+  {
+    const { access_token, refresh_token } = await this.service.refreshToken( body.refresh_token );
+
+    this.setAccessToken( res, access_token );
+
+    return { refresh_token };
   }
 
   @Post( 'login' )
   async login ( @Body() body: LoginDto, @Res( { passthrough: true } ) res: Response )
   {
-    const { access_token } = await this.service.login( body );
+    const { access_token, refresh_token } = await this.service.login( body );
 
     this.setAccessToken( res, access_token );
+
+    return { refresh_token };
   }
 
   @Post( 'logout' )
-  logout ( @Res( { passthrough: true } ) res: Response )
+  async logout ( @Res( { passthrough: true } ) res: Response )
   {
 
     res.clearCookie( 'access_token', {

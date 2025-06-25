@@ -1,7 +1,11 @@
 import { GeneralApiRes, ListRequestParams } from "@/types/api";
-import { requestWrapper } from "../utils/api";
-import { userAxios } from "./axios";
+import { AxiosInstanceFactory } from "./axios";
 import { User, UserListRes } from "@/types/users";
 
+const userAxios = new AxiosInstanceFactory( 'users' );
+
+const instance = userAxios.getInstance();
+
+
 export async function getUsers ( params: ListRequestParams<User> ): Promise<GeneralApiRes<UserListRes>>
-{ return await requestWrapper( userAxios.get( '', { params } ) ); }
+{ return instance.get( '', { params } ); }

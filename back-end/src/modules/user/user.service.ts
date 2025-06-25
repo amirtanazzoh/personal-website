@@ -23,6 +23,21 @@ export class UserService
     return exists;
   }
 
+  async getByInput ( input: string )
+  {
+    const user = await this.repo.findOne( {
+      where: [
+        { username: input },
+        { email: input },
+        { phone_number: input },
+      ],
+    } );
+
+    if ( !user ) throw new NotFoundException( `user with input: ${ input } is not found` );
+
+    return user;
+  }
+
   async getAll ( query: QueryParamsDto )
   {
     const { page = 1, limit: take = 10, sortBy = 'created_at', order = 'DESC', search, } = query;
@@ -52,13 +67,13 @@ export class UserService
     };
   }
 
-  async getById ( id: string )
+  async getById ( id: string ): Promise<User>
   {
     const user = await this.repo.findOne( { where: { id } } );
 
     if ( !user ) throw new NotFoundException( `user with id: ${ id } is not found` );
 
-    return instanceToPlain( user );
+    return instanceToPlain( user ) as User;
   }
 
   async create ( user: CreateUserDto )

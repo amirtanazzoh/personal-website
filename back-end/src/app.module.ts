@@ -16,6 +16,8 @@ import { FileModule } from './modules/file/file.module';
 import { UserLoggerService } from './common/logger/user.logger';
 import { ProjectModule } from './modules/project/project.module';
 import { MailModule } from './modules/mail/mail.module';
+import ChatModule from './modules/chat/chat.module';
+
 
 @Module( {
   imports: [
@@ -28,7 +30,8 @@ import { MailModule } from './modules/mail/mail.module';
     AuthModule,
     FileModule,
     ProjectModule,
-    MailModule
+    MailModule,
+    ChatModule
   ],
   providers: [
     JwtStrategy,

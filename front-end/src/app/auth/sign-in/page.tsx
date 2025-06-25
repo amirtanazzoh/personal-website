@@ -1,5 +1,5 @@
 'use client';;
-import { SignInAction } from "@/actions/login";
+
 import FormAlert from "@/components/form/form-alert";
 import PasswordInput from "@/components/form/password-input";
 import PhoneNumberInput from "@/components/form/phone-number-input";
@@ -9,6 +9,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormField } from "@/components/ui/form";
 import { Separator } from "@/components/ui/seprator";
+import useRefreshToken from "@/hooks/useRefreshToken";
+import { signIn } from "@/services/auth";
 import { SignInFormType, SignInFormSchema } from "@/types/login";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
@@ -30,22 +32,28 @@ export default function SignInPage ()
 
     const form = useForm<SignInFormType>( { resolver: zodResolver( SignInFormSchema ), defaultValues } );
     const [ formStatus, setFormStatus ] = useState<{ message: string, status: undefined | Boolean; }>( { message: '', status: undefined } );
+    const { setToken } = useRefreshToken();
 
     async function onSubmit ( data: SignInFormType )
     {
 
-        const { phone_number, password_confirm, ...restData } = data;
+        const { password_confirm, ...restData } = data;
+        const passwordUnmatched = password_confirm !== restData.password;
 
-        if ( password_confirm !== restData.password ) { setFormStatus( { message: 'Passwords are not match!', status: false } ); return; }
+        if ( passwordUnmatched )
+        {
+            setFormStatus( { message: 'Passwords are not match!', status: false } );
+            return;
+        }
 
-
-        const res = await SignInAction( {
-            phone_number: '0' + phone_number,
-            ...restData,
-        } );
+        const res = await signIn( { ...restData, } );
 
         if ( !res.success ) { setFormStatus( { message: res.message, status: false } ); }
-        if ( res.success ) { setFormStatus( { message: 'login successfully!', status: true } ); }
+        if ( res.success )
+        {
+            setFormStatus( { message: 'sign in successfully!', status: true } );
+            setToken( res.data.refresh_token );
+        }
     }
 
 

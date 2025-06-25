@@ -13,7 +13,7 @@ export default function FormAlert ( props: { message: string, status: undefined 
                 <AlertTitle>{ props.status ? 'Success' : 'Error' }</AlertTitle>
                 <AlertDescription>
                     <pre className="whitespace-pre-wrap break-words max-w-full box-border">
-                        { props.message.charAt( 0 ).toUpperCase() + props.message.slice( 1 ) }
+                        { props.message }
                     </pre>
                 </AlertDescription>
             </Alert>
