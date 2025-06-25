@@ -62,7 +62,7 @@ services:
     #Start Develop Section
     develop:
       watch:
-        - action: sync
+        - action: sync+restart
           path: ./front-end
           target: /app
     command: npm run dev

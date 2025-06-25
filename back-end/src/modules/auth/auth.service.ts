@@ -13,7 +13,6 @@ import { UserService } from '../user/user.service';
 export class AuthService
 {
   constructor (
-
     @InjectRepository( RefreshToken ) private refreshTokenRepo: Repository<RefreshToken>,
     @Inject( UserService ) private readonly userService: UserService,
     @Inject( JwtService ) private readonly jwtService: JwtService,
@@ -81,7 +80,7 @@ export class AuthService
   async refreshToken ( token: string ): Promise<Tokens>
   {
 
-    const refreshToken = await this.refreshTokenRepo.findOne( { where: { token } } );
+    const refreshToken = await this.refreshTokenRepo.findOne( { where: { token }, relations: [ 'user' ] } );
 
     if ( !refreshToken ) throw new NotFoundException( 'refresh token not found!' );
 

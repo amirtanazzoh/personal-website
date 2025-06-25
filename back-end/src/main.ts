@@ -16,7 +16,11 @@ async function bootstrap ()
 
   app.use( cookieParser() );
 
-  app.enableCors( { origin: process.env.FRONTEND_URL, credentials: true } );
+  app.enableCors(
+    {
+      origin: process.env.APP_DOMAIN,
+      credentials: true
+    } );
 
   app.useGlobalPipes( new ValidationPipe( { whitelist: true, forbidNonWhitelisted: true, transform: true, } ) );
 
