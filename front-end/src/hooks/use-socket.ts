@@ -1,7 +1,7 @@
 import { CLIENT_API_BASE_URL } from '@/constants';
 import { refreshToken } from '@/services/auth';
 import { io } from 'socket.io-client';
-import useRefreshToken from './useRefreshToken';
+import useRefreshToken from './use-refresh-token';
 
 /**
  * Custom hook to create a socket.io client instance.

@@ -32,43 +32,24 @@ services:
       - website-network
 
   backend:
-    build: './back-end'
+    image: backend:latest
     container_name: backend
     env_file:
       - ./back-end/.env
     volumes:
       - ./logs/backend:/app/logs
-
-    #Start Develop Section
-    develop:
-      watch:
-        - action: sync+restart
-          path: ./back-end
-          target: /app
-    command: npm run start
-    #End Develop Section
     restart: unless-stopped
 
     networks:
       - website-network
 
   frontend:
-    build: './front-end'
+    image: frontend:latest
     container_name: frontend
     env_file:
       - ./front-end/.env
     volumes:
       - ./logs/frontend:/app/logs
-    #Start Develop Section
-    develop:
-      watch:
-        - action: sync
-          path: ./front-end
-          target: /app
-        - action: rebuild
-          path: './front-end/package.json'
-    command: npm run dev
-    #End Develop Section
     restart: unless-stopped
     networks:
       - website-network
@@ -77,8 +58,8 @@ services:
     image: nginx:latest
     container_name: nginx
     ports: 
-     - 127.4.4.1:80:80
-     - 127.4.4.1:443:443
+     - 80:80
+     - 443:443
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
       - ./certs:/certs

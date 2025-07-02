@@ -1,6 +1,6 @@
 'use client';;
 import { Skeleton } from "@/components/ui/skeleton";
-import useRefreshToken from "@/hooks/useRefreshToken";
+import useRefreshToken from "@/hooks/use-refresh-token";
 import { useEffect } from "react";
 
 export default function AuthPage ()
