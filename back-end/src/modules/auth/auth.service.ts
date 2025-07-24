@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../database/user.entity';
 import { Repository } from 'typeorm';
 import { LoginDto, SignInDto } from 'src/common/dto/auth.dto';
-import { verifyBcrypt } from 'src/utils/bcrypt.util';
+import { verifyArgon } from 'src/utils/hashing.util';
 import { JwtService } from '@nestjs/jwt';
 import { Tokens } from 'src/types/login';
 import { RefreshToken } from '../database/refresh-token.entity';
@@ -65,7 +65,7 @@ export class AuthService
 
     if ( !user ) throw new NotFoundException( 'user not found!' );
 
-    const isPasswordValid = await verifyBcrypt( password, user.password );
+    const isPasswordValid = await verifyArgon( password, user.password );
 
     if ( !isPasswordValid ) throw new BadRequestException( 'invalid credentials!' );
 
