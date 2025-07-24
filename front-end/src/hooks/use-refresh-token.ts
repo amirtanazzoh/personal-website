@@ -1,6 +1,6 @@
 'use client';
 
-import { refreshToken } from "@/services/auth";
+import { refreshToken } from "@/services/api/auth";
 import { useRouter, useSearchParams } from "next/navigation";
 
 /**

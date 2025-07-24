@@ -10,7 +10,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Form, FormField } from "@/components/ui/form";
 import { Separator } from "@/components/ui/seprator";
 import useRefreshToken from "@/hooks/use-refresh-token";
-import { signIn } from "@/services/auth";
+import { signIn } from "@/services/api/auth";
 import { SignInFormType, SignInFormSchema } from "@/types/login";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
