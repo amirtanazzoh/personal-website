@@ -5,3 +5,4 @@ credentials.txt
 /minio-data
 /node_modules
 /logs
+/note.txt
