@@ -22,13 +22,19 @@ export class AuthService
 
   public generateForgetPasswordToken ( email: string ): string { return this.jwtService.sign( { email }, { expiresIn: '15m' } ); }
 
-  private async generateRefreshToken ( user: User ): Promise<string> 
+  private async generateRefreshToken ( user: User, prevTokenExpiresAt?: Date ): Promise<string> 
   {
-    const expiresAt = new Date();
-    expiresAt.setDate( expiresAt.getDate() + 7 ); // 7 days expiration
+
+    const expiresAt: Date = prevTokenExpiresAt ?? ( () =>
+    {
+      const date = new Date();
+      date.setDate( date.getDate() + 7 );
+      return date;
+    } )();
+
 
     const refreshToken = await this.refreshTokenRepo.save( {
-      token: this.jwtService.sign( {}, { expiresIn: '7d' } ),
+      token: this.jwtService.sign( {} ),
       expires_at: expiresAt,
       user,
     } );
@@ -88,7 +94,7 @@ export class AuthService
 
     return {
       access_token: this.generateAccessToken( refreshToken.user ),
-      refresh_token: await this.generateRefreshToken( refreshToken.user ),
+      refresh_token: await this.generateRefreshToken( refreshToken.user, refreshToken.expires_at ),
     };
 
   }
