@@ -1,5 +1,5 @@
 import { MAP } from "@/components/utils/map";
-import { getUsers } from "@/services/users";
+import { getUsers } from "@/services/api/users";
 
 export default async function DashboardPage ()
 {
