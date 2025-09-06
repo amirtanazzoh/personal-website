@@ -2,7 +2,7 @@ import 'dotenv/config';
 import { User } from '../src/modules/database/user.entity';
 import { EUserRole } from '../src/types/enums';
 import { DataSource } from 'typeorm';
-import { hashBcrypt } from '../src/utils/bcrypt.util';
+import { hashArgon } from '../src/utils/hashing.util';
 import { faker } from '@faker-js/faker';
 import { RefreshToken } from 'src/modules/database/refresh-token.entity';
 
@@ -29,7 +29,7 @@ async function main ()
     if ( !process.env.ADMIN_PASSWORD || !process.env.ADMIN_USERNAME )
         throw new Error( '❌ Missing ADMIN_USERNAME or ADMIN_PASSWORD in .env' );
 
-    const hashedPassword = await hashBcrypt( process.env.ADMIN_PASSWORD );
+    const hashedPassword = await hashArgon( process.env.ADMIN_PASSWORD );
 
     const adminUser = userRepository.create( {
         username: process.env.ADMIN_USERNAME,

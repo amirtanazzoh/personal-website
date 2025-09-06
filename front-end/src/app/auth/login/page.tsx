@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Form, FormField } from "@/components/ui/form";
 import { Separator } from "@/components/ui/separator";
 import useRefreshToken from "@/hooks/use-refresh-token";
-import { login } from "@/services/auth";
+import { login } from "@/services/api/auth";
 import { LoginFormSchema, LoginFormType } from "@/types/login";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";

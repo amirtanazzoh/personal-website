@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../database/user.entity';
 import { Repository } from 'typeorm';
 import { LoginDto, SignInDto } from 'src/common/dto/auth.dto';
-import { verifyBcrypt } from 'src/utils/bcrypt.util';
+import { verifyArgon } from 'src/utils/hashing.util';
 import { JwtService } from '@nestjs/jwt';
 import { Tokens } from 'src/types/login';
 import { RefreshToken } from '../database/refresh-token.entity';
@@ -22,13 +22,19 @@ export class AuthService
 
   public generateForgetPasswordToken ( email: string ): string { return this.jwtService.sign( { email }, { expiresIn: '15m' } ); }
 
-  private async generateRefreshToken ( user: User ): Promise<string> 
+  private async generateRefreshToken ( user: User, prevTokenExpiresAt?: Date ): Promise<string> 
   {
-    const expiresAt = new Date();
-    expiresAt.setDate( expiresAt.getDate() + 7 ); // 7 days expiration
+
+    const expiresAt: Date = prevTokenExpiresAt ?? ( () =>
+    {
+      const date = new Date();
+      date.setDate( date.getDate() + 7 );
+      return date;
+    } )();
+
 
     const refreshToken = await this.refreshTokenRepo.save( {
-      token: this.jwtService.sign( {}, { expiresIn: '7d' } ),
+      token: this.jwtService.sign( {} ),
       expires_at: expiresAt,
       user,
     } );
@@ -65,7 +71,7 @@ export class AuthService
 
     if ( !user ) throw new NotFoundException( 'user not found!' );
 
-    const isPasswordValid = await verifyBcrypt( password, user.password );
+    const isPasswordValid = await verifyArgon( password, user.password );
 
     if ( !isPasswordValid ) throw new BadRequestException( 'invalid credentials!' );
 
@@ -88,7 +94,7 @@ export class AuthService
 
     return {
       access_token: this.generateAccessToken( refreshToken.user ),
-      refresh_token: await this.generateRefreshToken( refreshToken.user ),
+      refresh_token: await this.generateRefreshToken( refreshToken.user, refreshToken.expires_at ),
     };
 
   }
