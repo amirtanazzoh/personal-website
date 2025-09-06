@@ -1,5 +1,5 @@
 import { API_OWNER, API_SECRET, API_TIMEOUT_IN_MILLISECOND, CLIENT_API_BASE_URL, SERVER_API_BASE_URL } from '@/constants';
-import { isClient, isServer } from '@/utils/basic';
+import { isClient, isDevelopment, isServer } from '@/utils/basic';
 import axios, { AxiosInstance } from 'axios';
 
 export class AxiosInstanceFactory
@@ -22,11 +22,15 @@ export class AxiosInstanceFactory
         this.addDefaults();
 
         //Add General Interceptors
-
         this.addInterceptor( this.addCookiesForServerRequests );
         this.addInterceptor( this.RefreshToken.bind( this ) );
         this.addInterceptor( this.sendErrorLogs );
         this.addInterceptor( this.responseWrapper );
+
+        if ( isDevelopment() )
+        {
+            this.addInterceptor( this.logRequests );
+        }
 
 
     }
@@ -55,19 +59,19 @@ export class AxiosInstanceFactory
     {
         instance.interceptors.request.use( ( config ) =>
         {
-            console.log( 'config: ', config );
+            console.debug( 'config: ', config );
             return config;
         } );
 
         instance.interceptors.response.use(
             ( res ) =>
             {
-                console.log( 'res: ', res );
+                console.debug( 'res: ', res );
                 return res;
             },
             ( err ) =>
             {
-                console.log( 'err: ', err );
+                console.error( 'err: ', err );
                 throw err;
             }
         );
@@ -201,6 +205,7 @@ export class AxiosInstanceFactory
 
     public getInstance () { return this.instance; }
 
+    
     public addInterceptor ( interceptor: ( instance: AxiosInstance ) => void ) { interceptor( this.instance ); }
 }
 

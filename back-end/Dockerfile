@@ -4,9 +4,6 @@ FROM node:20-slim AS builder
 # Set working directory
 WORKDIR /app
 
-# Change registry for fast installation in IRAN
-RUN npm config set registry "https://mirror-npm.runflare.com"
-
 # Copy packages
 COPY package*.json ./
 
@@ -19,18 +16,18 @@ COPY . .
 # Build the NestJS app
 RUN npm run build
 
-# # === Production image ===
-# FROM node:20-slim
+# === Production image ===
+FROM node:20-slim
 
-# WORKDIR /app
+WORKDIR /app
 
-# # Only copy necessary files from builder
-# COPY --from=builder /app/package*.json ./
-# COPY --from=builder /app/dist ./dist
-# COPY --from=builder /app/node_modules ./node_modules
+# Only copy necessary files from builder
+COPY --from=builder /app/package*.json ./
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/node_modules ./node_modules
 
-# # Set environment variables (if needed)
-# ENV NODE_ENV=production
+# Set environment variables (if needed)
+ENV NODE_ENV=production
 
 # Expose the port your Nest app listens on
 EXPOSE 3000
@@ -38,5 +35,5 @@ EXPOSE 3000
 #Expose the port for websocket
 EXPOSE 8000
 
-# # Start the app
-# CMD ["node", "dist/src/main"]
+# Start the app
+CMD ["node", "dist/src/main"]

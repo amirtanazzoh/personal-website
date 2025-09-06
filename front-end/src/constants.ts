@@ -10,6 +10,8 @@ export const API_SECRET = process.env.NEXT_PUBLIC_API_SECRET;
 
 export const API_OWNER = process.env.NEXT_PUBLIC_API_OWNER;
 
+export const NODE_ENV = process.env.NODE_ENV;
+
 
 if ( isServer() )
 {

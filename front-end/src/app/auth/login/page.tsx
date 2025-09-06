@@ -6,7 +6,7 @@ import TextInput from "@/components/form/text-input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormField } from "@/components/ui/form";
-import { Separator } from "@/components/ui/seprator";
+import { Separator } from "@/components/ui/separator";
 import useRefreshToken from "@/hooks/use-refresh-token";
 import { login } from "@/services/auth";
 import { LoginFormSchema, LoginFormType } from "@/types/login";
