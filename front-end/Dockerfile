@@ -1,5 +1,5 @@
 # Step 1: Build the app
-FROM node:20-alpine AS builder
+FROM node:20-slim AS builder
 
 # Set working directory
 WORKDIR /app
@@ -17,7 +17,7 @@ COPY . .
 RUN npm run build
 
 # Step 2: Run the app with a smaller image
-FROM node:18-alpine AS runner
+FROM node:20-slim AS runner
 
 WORKDIR /app
 

@@ -10,15 +10,15 @@ services:
     networks:
       - website-network
 
-  adminer:
-    image: adminer
-    container_name: adminer
-    restart: unless-stopped
-    env_file:
-      - .env
-    networks:
-      - website-network
-
+  # adminer:
+  #   image: adminer
+  #   container_name: adminer
+  #   restart: unless-stopped
+  #   env_file:
+  #     - .env
+  #   networks:
+  #     - website-network
+   
   minio:
     image: minio/minio
     container_name: minio
